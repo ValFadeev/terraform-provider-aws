@@ -67,7 +67,7 @@ The following arguments are supported:
 
 **ebs_options** supports the following attributes:
 
-* `ebs_enabled` - (Required) Whether EBS volumes are attached to data nodes in the domain
+* `ebs_enabled` - (Required) Whether EBS volumes are attached to data nodes in the domain.
 * `volume_type` - (Optional) The type of EBS volumes attached to data nodes.
 * `volume_size` - The size of EBS volumes attached to data nodes (in GB).
 **Required** if `ebs_enabled` is set to `true`.
@@ -85,7 +85,7 @@ The following arguments are supported:
 * `instance_count` - (Optional) Number of instances in the cluster.
 * `dedicated_master_enabled` - (Optional) Indicates whether dedicated master nodes are enabled for the cluster.
 * `dedicated_master_type` - (Optional) Instance type of the dedicated master nodes in the cluster.
-* `dedicated_master_count` - (Optional) Number of dedicated master nodes in the cluster
+* `dedicated_master_count` - (Optional) Number of dedicated master nodes in the cluster.
 * `zone_awareness_enabled` - (Optional) Indicates whether zone awareness is enabled.
 
 **vpc_options** supports the following attributes:
