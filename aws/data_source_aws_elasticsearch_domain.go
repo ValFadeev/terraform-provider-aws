@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/elasticsearchservice"
 	"github.com/hashicorp/errwrap"
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/helper/structure"
 )
 
 func dataSourceAwsElasticSearchDomain() *schema.Resource {
@@ -18,6 +19,18 @@ func dataSourceAwsElasticSearchDomain() *schema.Resource {
 			"domain_id": {
 				Type:     schema.TypeString,
 				Computed: true,
+			},
+			"endpoints": {
+				Type:     schema.TypeSet,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"vpc": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
 			},
 			"endpoint": {
 				Type:     schema.TypeString,
@@ -155,7 +168,7 @@ func dataSourceAwsElasticSearchDomainRead(d *schema.ResourceData, meta interface
 	d.Set("deleted", ds.Deleted)
 
 	if ds.AccessPolicies != nil && *ds.AccessPolicies != "" {
-		policies, err := normalizeJsonString(*ds.AccessPolicies)
+		policies, err := structure.NormalizeJsonString(*ds.AccessPolicies)
 		if err != nil {
 			return errwrap.Wrapf("access policies contain an invalid JSON: {{err}}", err)
 		}
@@ -180,6 +193,14 @@ func dataSourceAwsElasticSearchDomainRead(d *schema.ResourceData, meta interface
 	err = d.Set("ebs_options", flattenESEBSOptions(ds.EBSOptions))
 	if err != nil {
 		return err
+	}
+
+	if ds.Endpoints != nil {
+		m := map[string]interface{}{}
+
+		m["vpc"] = *ds.Endpoints["vpc"]
+
+		d.Set("endpoints", []map[string]interface{}{m})
 	}
 
 	if ds.SnapshotOptions != nil {
